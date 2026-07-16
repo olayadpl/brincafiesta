@@ -1098,7 +1098,14 @@
       + 'Personas: ' + qtyNum + '%0A'
       + 'Total estimado: ' + total + '%0A'
       + 'Nombre: ' + name;
-    window.open('https://wa.me/5359673871?text=' + msg, '_blank');
+    const waUrl = 'https://wa.me/5359673871?text=' + msg;
+    const waLink = document.createElement('a');
+    waLink.href = waUrl;
+    waLink.target = '_blank';
+    waLink.rel = 'noopener';
+    document.body.appendChild(waLink);
+    waLink.click();
+    document.body.removeChild(waLink);
     box.style.background = 'var(--verde-limon)';
     box.style.color = 'var(--tinta)';
     box.style.display = 'block';
