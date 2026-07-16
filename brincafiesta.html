@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BrincaFiesta — Parque inflable para cumpleaños</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
   :root{
     --rojo:#E8483C;
@@ -30,20 +28,20 @@
     margin:0;
     background:var(--crema);
     color:var(--tinta);
-    font-family:'Nunito',sans-serif;
+    font-family:Arial,sans-serif;
     font-size:16px;
     line-height:1.5;
   }
   h1,h2,h3,.display{
-    font-family:'Fredoka',sans-serif;
+    font-family:Arial,sans-serif;
     margin:0 0 .3em 0;
     letter-spacing:.2px;
   }
-  a{color:inherit;}
+  a{color:inherit;text-decoration:none;}
   img,svg{display:block;max-width:100%;}
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
   .eyebrow{
-    font-family:'Fredoka',sans-serif;
+    font-family:Arial,sans-serif;
     font-weight:600;
     font-size:.8rem;
     letter-spacing:1.5px;
@@ -67,7 +65,7 @@
     max-width:1180px;margin:0 auto;
   }
   .logo{
-    font-family:'Fredoka',sans-serif;
+    font-family:Arial,sans-serif;
     font-weight:700;
     font-size:1.5rem;
     display:flex;align-items:center;gap:10px;
@@ -84,7 +82,7 @@
   }
   nav ul a:hover{border-color:var(--violeta);}
   .btn{
-    font-family:'Fredoka',sans-serif;
+    font-family:Arial,sans-serif;
     font-weight:600;
     border:none;cursor:pointer;
     padding:14px 28px;
@@ -118,7 +116,7 @@
   .hero p{font-size:1.15rem;max-width:46ch;color:#4a3c2c;}
   .hero-ctas{display:flex;gap:14px;margin-top:26px;flex-wrap:wrap;}
   .hero-stats{display:flex;gap:26px;margin-top:38px;flex-wrap:wrap;}
-  .hero-stats div{font-family:'Fredoka',sans-serif;}
+  .hero-stats div{font-family:Arial,sans-serif;}
   .hero-stats strong{display:block;font-size:1.6rem;color:var(--marron);}
   .hero-stats span{font-size:.85rem;color:#6b5a45;}
 
@@ -161,7 +159,7 @@
   }
   .ticket-card:hover{transform:translateY(-8px) rotate(-1deg);}
   .ticket-card h3{font-size:1.25rem;margin-bottom:4px;}
-  .ticket-card .price{font-family:'Fredoka',sans-serif;font-size:2rem;font-weight:700;margin:10px 0 6px;}
+  .ticket-card .price{font-family:Arial,sans-serif;font-size:2rem;font-weight:700;margin:10px 0 6px;}
   .ticket-card .price span{font-size:.9rem;font-weight:400;opacity:.85;}
   .ticket-card ul{margin:14px 0 0;padding-left:18px;font-size:.88rem;opacity:.95;}
   .ticket-card li{margin-bottom:4px;}
@@ -177,7 +175,7 @@
   .ticket-card button{
     margin-top:18px;width:100%;
     background:rgba(255,255,255,.9);color:var(--tinta);
-    border:none;padding:11px;border-radius:999px;font-family:'Fredoka',sans-serif;
+    border:none;padding:11px;border-radius:999px;font-family:Arial,sans-serif;
     font-weight:600;cursor:pointer;transition:transform .3s var(--bounce);
   }
   .ticket-card button:hover{transform:scale(1.05);}
@@ -196,13 +194,13 @@
     box-shadow:var(--shadow-soft);
   }
   .package-card .pill{
-    display:inline-block;font-family:'Fredoka',sans-serif;font-weight:600;
+    display:inline-block;font-family:Arial,sans-serif;font-weight:600;
     padding:6px 16px;border-radius:999px;color:#fff;font-size:.85rem;margin-bottom:14px;
   }
   .pkg-2h .pill{background:var(--verde-limon);color:var(--tinta);}
   .pkg-3h .pill{background:var(--amarillo);color:var(--tinta);}
   .package-card h3{font-size:1.7rem;}
-  .package-card .price{font-family:'Fredoka',sans-serif;font-size:2.4rem;font-weight:700;color:var(--marron);margin:6px 0 16px;}
+  .package-card .price{font-family:Arial,sans-serif;font-size:2.4rem;font-weight:700;color:var(--marron);margin:6px 0 16px;}
   .package-card .price span{font-size:1rem;font-weight:400;color:#6b5a45;}
   .package-card ul{list-style:none;margin:0 0 22px;padding:0;}
   .package-card li{display:flex;gap:10px;margin-bottom:10px;font-size:.95rem;}
@@ -225,13 +223,13 @@
     padding:28px;
   }
   .field-label{
-    font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
+    font-family:Arial,sans-serif;font-weight:600;font-size:.95rem;
     margin:0 0 10px;color:var(--amarillo);
   }
   .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
   .type-btn{
     border:2px solid #55452f;background:#4a3b29;color:var(--crema);
-    border-radius:16px;padding:12px 8px;font-family:'Nunito',sans-serif;font-weight:700;
+    border-radius:16px;padding:12px 8px;font-family:Arial,sans-serif;font-weight:700;
     font-size:.82rem;cursor:pointer;transition:.25s var(--bounce);text-align:center;
   }
   .type-btn:hover{transform:translateY(-2px);}
@@ -245,7 +243,7 @@
     cursor:pointer;font-size:1rem;transition:.25s var(--bounce);
   }
   .cal-header button:hover{background:var(--azul-celeste);color:var(--tinta);}
-  .cal-title{font-family:'Fredoka',sans-serif;font-weight:600;text-transform:capitalize;}
+  .cal-title{font-family:Arial,sans-serif;font-weight:600;text-transform:capitalize;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:22px;}
   .cal-grid .dow{text-align:center;font-size:.72rem;color:#a99878;font-weight:700;padding-bottom:4px;}
   .day-cell{
@@ -270,7 +268,7 @@
   .form-row.full{grid-template-columns:1fr;}
   input[type=text],input[type=tel],input[type=email],input[type=number]{
     width:100%;padding:12px 14px;border-radius:12px;border:2px solid #55452f;
-    background:#2f2519;color:var(--crema);font-family:'Nunito',sans-serif;font-size:.92rem;
+    background:#2f2519;color:var(--crema);font-family:Arial,sans-serif;font-size:.92rem;
   }
   input::placeholder{color:#a99878;}
   input:focus{outline:2px solid var(--azul-celeste);outline-offset:1px;}
@@ -282,7 +280,7 @@
   .summary h3{color:var(--marron);}
   .summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #d8c4a8;font-size:.92rem;}
   .summary-row span:first-child{color:#6b5a45;font-weight:700;}
-  .summary-total{display:flex;justify-content:space-between;padding-top:16px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.4rem;color:var(--rojo);}
+  .summary-total{display:flex;justify-content:space-between;padding-top:16px;font-family:Arial,sans-serif;font-weight:700;font-size:1.4rem;color:var(--rojo);}
   .summary .btn-primary{width:100%;justify-content:center;margin-top:20px;background:var(--violeta);}
   .helper-note{font-size:.78rem;color:#8a7a63;margin-top:10px;text-align:center;}
   .confirm-box{
@@ -294,7 +292,7 @@
   .footer-grid{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;}
   .footer-grid .logo{color:var(--crema);}
   footer .cols{display:flex;gap:60px;flex-wrap:wrap;}
-  footer h4{font-family:'Fredoka',sans-serif;font-size:.95rem;margin-bottom:10px;color:var(--amarillo);}
+  footer h4{font-family:Arial,sans-serif;font-size:.95rem;margin-bottom:10px;color:var(--amarillo);}
   footer ul{list-style:none;margin:0;padding:0;font-size:.88rem;}
   footer li{margin-bottom:6px;opacity:.9;}
   .fine{text-align:center;font-size:.78rem;opacity:.75;margin-top:30px;}
@@ -338,7 +336,7 @@
   .gallery-placeholder{
     width:100%;height:100%;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
+    gap:8px;font-family:Arial,sans-serif;font-weight:600;font-size:.95rem;
     color:#fff;text-align:center;padding:16px;
   }
   .gallery-placeholder .gp-emoji{font-size:2.4rem;}
@@ -386,7 +384,7 @@
   .testi-card:hover{transform:translateY(-6px);border-color:var(--rosado);}
   .testi-card::before{
     content:"\201C";position:absolute;top:14px;right:22px;
-    font-family:'Fredoka',sans-serif;font-size:4rem;line-height:1;
+    font-family:Arial,sans-serif;font-size:4rem;line-height:1;
     color:var(--crema-2);
   }
   .testi-stars{display:flex;gap:3px;margin-bottom:12px;}
@@ -400,10 +398,10 @@
   .testi-avatar{
     width:46px;height:46px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;
+    font-family:Arial,sans-serif;font-weight:700;font-size:1.1rem;color:#fff;
     flex-shrink:0;
   }
-  .testi-name{font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;}
+  .testi-name{font-family:Arial,sans-serif;font-weight:600;font-size:.95rem;}
   .testi-role{font-size:.78rem;color:#8a7a63;}
   .ta-1{background:var(--rojo);}
   .ta-2{background:var(--azul-celeste);}
