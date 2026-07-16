@@ -232,8 +232,7 @@
 const SUPABASE_URL = 'https://rgtcbnylsjkxrxjskoag.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndGNibnlsc2preHJ4anNrb2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNjkzMzksImV4cCI6MjA5OTc0NTMzOX0.VUv-mIh6nM1RyqkbGt4_9iqugPMS6GbD3arppl-Ckp4';
 console.log('supabase available:', typeof window.supabase);
-const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const supabase = client;
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
 let viewYear, viewMonth;
@@ -252,7 +251,7 @@ async function doLogin(){
   errEl.textContent='Conectando...';errEl.style.display='block';errEl.style.color='#8a7e6e';
   try{
     console.log('Attempting login with:', email);
-    const {data,error} = await supabase.auth.signInWithPassword({email,password:pass});
+    const {data,error} = await db.auth.signInWithPassword({email,password:pass});
     console.log('Login result:', data, error);
     if(error){errEl.textContent='Error: '+error.message;errEl.style.color='#E8483C';errEl.style.display='block';return;}
     currentUser = data.user;
@@ -264,7 +263,7 @@ async function doLogin(){
 }
 
 async function doLogout(){
-  await supabase.auth.signOut();
+  await db.auth.signOut();
   currentUser = null;
   document.getElementById('dashboard').style.display='none';
   document.getElementById('loginWrap').style.display='flex';
@@ -282,7 +281,7 @@ function showDashboard(){
 
 // --- CHECK SESSION ---
 (async()=>{
-  const {data:{session}} = await supabase.auth.getSession();
+  const {data:{session}} = await db.auth.getSession();
   if(session){currentUser=session.user;showDashboard();}
 })();
 
@@ -304,7 +303,7 @@ async function loadAll(){
 
 // --- RESERVATIONS ---
 async function loadReservations(){
-  const {data} = await supabase.from('reservations').select('*').order('date',{ascending:false});
+  const {data} = await db.from('reservations').select('*').order('date',{ascending:false});
   allReservations = data || [];
   renderStats();
   renderCalendar();
@@ -376,13 +375,13 @@ function renderResTable(){
 }
 
 async function updateStatus(id, status){
-  await supabase.from('reservations').update({status}).eq('id',id);
+  await db.from('reservations').update({status}).eq('id',id);
   loadReservations();
 }
 
 // --- GALLERY ---
 async function loadGallery(){
-  const {data} = await supabase.from('gallery').select('*').order('sort_order');
+  const {data} = await db.from('gallery').select('*').order('sort_order');
   const grid = document.getElementById('galleryGrid');
   grid.innerHTML = (data||[]).map(g=>`
     <div class="gallery-item">
@@ -399,10 +398,10 @@ async function handleUpload(event){
   for(const file of files){
     const ext = file.name.split('.').pop();
     const path = Date.now()+'.'+ext;
-    const {error} = await supabase.storage.from('gallery').upload(path,file);
+    const {error} = await db.storage.from('gallery').upload(path,file);
     if(error){alert('Error subiendo: '+error.message);continue;}
     const url = SUPABASE_URL+'/storage/v1/object/public/gallery/'+path;
-    await supabase.from('gallery').insert({url,alt:file.name.replace(/\.[^.]+$/,'')});
+    await db.from('gallery').insert({url,alt:file.name.replace(/\.[^.]+$/,'')});
   }
   loadGallery();
   event.target.value='';
@@ -411,8 +410,8 @@ async function handleUpload(event){
 async function deleteGallery(id, url){
   if(!confirm('¿Eliminar esta foto?'))return;
   const path = url.split('/gallery/')[1];
-  await supabase.storage.from('gallery').remove([path]);
-  await supabase.from('gallery').delete().eq('id',id);
+  await db.storage.from('gallery').remove([path]);
+  await db.from('gallery').delete().eq('id',id);
   loadGallery();
 }
 
@@ -430,7 +429,7 @@ uploadArea.addEventListener('drop',e=>{
 
 // --- PACKAGES ---
 async function loadPackages(){
-  const {data} = await supabase.from('packages').select('*').order('sort_order');
+  const {data} = await db.from('packages').select('*').order('sort_order');
   allPackages = data||[];
   renderPkgTable();
 }
@@ -477,14 +476,14 @@ async function savePackage(){
     type: document.getElementById('pkgType').value
   };
   if(!obj.name||!obj.price||!obj.duration){alert('Completa todos los campos');return;}
-  if(id){await supabase.from('packages').update(obj).eq('id',id);}
-  else{await supabase.from('packages').insert(obj);}
+  if(id){await db.from('packages').update(obj).eq('id',id);}
+  else{await db.from('packages').insert(obj);}
   closePackageModal();
   loadPackages();
 }
 
 async function togglePackage(id, active){
-  await supabase.from('packages').update({active}).eq('id',id);
+  await db.from('packages').update({active}).eq('id',id);
   loadPackages();
 }
 
