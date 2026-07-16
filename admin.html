@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrincaFiesta Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;background:#f5f0eb;color:#2B2118;}
+
+  /* Login */
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+  .login-box{background:#fff;padding:40px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.1);width:100%;max-width:380px;text-align:center;}
+  .login-box h1{font-size:1.6rem;margin-bottom:8px;color:#E8483C;}
+  .login-box p{font-size:.85rem;color:#8a7e6e;margin-bottom:24px;}
+  .login-box input{width:100%;padding:12px 16px;border:2px solid #e8e0d6;border-radius:10px;font-size:.95rem;margin-bottom:12px;outline:none;transition:border .2s;}
+  .login-box input:focus{border-color:#E8483C;}
+  .login-box button{width:100%;padding:12px;background:#E8483C;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .2s;}
+  .login-box button:hover{transform:scale(1.02);}
+  .login-error{color:#E8483C;font-size:.85rem;margin-top:8px;display:none;}
+
+  /* Dashboard */
+  .dashboard{display:none;min-height:100vh;}
+  .topbar{background:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e8e0d6;position:sticky;top:0;z-index:50;}
+  .topbar h2{font-size:1.1rem;color:#E8483C;}
+  .topbar .user-info{font-size:.85rem;color:#8a7e6e;}
+  .topbar button{background:none;border:2px solid #e8e0d6;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:.85rem;color:#8a7e6e;transition:all .2s;}
+  .topbar button:hover{border-color:#E8483C;color:#E8483C;}
+
+  .layout{display:flex;min-height:calc(100vh - 53px);}
+  .sidebar{width:220px;background:#fff;border-right:1px solid #e8e0d6;padding:16px 0;flex-shrink:0;}
+  .sidebar button{width:100%;text-align:left;padding:12px 24px;background:none;border:none;font-size:.9rem;cursor:pointer;color:#8a7e6e;transition:all .2s;border-left:3px solid transparent;}
+  .sidebar button:hover{background:#fdf6f0;color:#2B2118;}
+  .sidebar button.active{background:#fdf6f0;color:#E8483C;border-left-color:#E8483C;font-weight:700;}
+
+  .content{flex:1;padding:24px;overflow-y:auto;}
+  .section{display:none;}
+  .section.active{display:block;}
+
+  /* Cards */
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+  .stat-card{background:#fff;border-radius:12px;padding:20px;text-align:center;border:1px solid #e8e0d6;}
+  .stat-card .num{font-size:2rem;font-weight:800;color:#E8483C;}
+  .stat-card .label{font-size:.8rem;color:#8a7e6e;margin-top:4px;}
+
+  /* Tables */
+  .table-wrap{background:#fff;border-radius:12px;border:1px solid #e8e0d6;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;}
+  th{background:#fdf6f0;padding:12px 16px;text-align:left;font-size:.8rem;text-transform:uppercase;color:#8a7e6e;border-bottom:1px solid #e8e0d6;}
+  td{padding:12px 16px;border-bottom:1px solid #f0ebe5;font-size:.9rem;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#fdf6f0;}
+
+  /* Buttons */
+  .btn{padding:8px 16px;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+  .btn-primary{background:#E8483C;color:#fff;}
+  .btn-primary:hover{background:#d43d32;}
+  .btn-success{background:#B7D62B;color:#2B2118;}
+  .btn-success:hover{background:#a5c420;}
+  .btn-danger{background:#fff;color:#E8483C;border:1px solid #E8483C;}
+  .btn-danger:hover{background:#fdf0f0;}
+  .btn-sm{padding:5px 10px;font-size:.78rem;}
+
+  /* Status badges */
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;}
+  .badge-pendiente{background:#FFF3CD;color:#856404;}
+  .badge-confirmada{background:#D4EDDA;color:#155724;}
+  .badge-cancelada{background:#F8D7DA;color:#721C24;}
+
+  /* Gallery grid */
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+  .gallery-item{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:#e8e0d6;}
+  .gallery-item img{width:100%;height:100%;object-fit:cover;}
+  .gallery-item .overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;}
+  .gallery-item:hover .overlay{opacity:1;}
+  .gallery-item .overlay button{margin:0 4px;}
+
+  /* Upload area */
+  .upload-area{border:2px dashed #e8e0d6;border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:border .2s;margin-bottom:16px;}
+  .upload-area:hover{border-color:#E8483C;}
+  .upload-area p{color:#8a7e6e;font-size:.9rem;}
+  .upload-area input{display:none;}
+
+  /* Modal */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+  .modal-bg.open{display:flex;}
+  .modal{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:420px;box-shadow:0 16px 48px rgba(0,0,0,.2);}
+  .modal h3{margin-bottom:16px;font-size:1.1rem;}
+  .modal label{display:block;font-size:.85rem;font-weight:600;margin-bottom:4px;color:#8a7e6e;}
+  .modal input,.modal select{width:100%;padding:10px 14px;border:2px solid #e8e0d6;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;}
+  .modal input:focus,.modal select:focus{border-color:#E8483C;}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;}
+
+  /* Calendar */
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-dow{text-align:center;font-size:.75rem;font-weight:700;color:#8a7e6e;padding:8px 0;}
+  .cal-day{background:#fff;border:1px solid #e8e0d6;border-radius:8px;padding:8px;min-height:80px;font-size:.8rem;}
+  .cal-day.today{border-color:#E8483C;}
+  .cal-day .day-num{font-weight:700;margin-bottom:4px;}
+  .cal-day .event{background:#fdf6f0;border-left:3px solid #E8483C;padding:2px 6px;margin:2px 0;border-radius:4px;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cal-day .event.confirmada{border-left-color:#B7D62B;background:#f6faf0;}
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .cal-nav h3{font-size:1.1rem;}
+  .cal-nav button{background:none;border:2px solid #e8e0d6;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1.2rem;transition:all .2s;}
+  .cal-nav button:hover{border-color:#E8483C;color:#E8483C;}
+
+  /* Responsive */
+  @media(max-width:768px){
+    .sidebar{display:none;}
+    .layout{flex-direction:column;}
+    .sidebar.show{display:block;position:fixed;top:53px;left:0;bottom:0;width:220px;z-index:40;box-shadow:4px 0 16px rgba(0,0,0,.1);}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <svg viewBox="0 0 36 36" fill="none" style="width:48px;margin:0 auto 12px;"><rect x="4" y="22" width="28" height="8" rx="3" fill="#E8483C"/><rect x="4" y="19" width="28" height="5" rx="2" fill="#FF6FA5"/><rect x="2" y="10" width="9" height="12" rx="3" fill="#4EC5F1"/><rect x="25" y="10" width="9" height="12" rx="3" fill="#4EC5F1"/><polygon points="2,10 6.5,4 11,10" fill="#FFCA3A"/><polygon points="25,10 29.5,4 34,10" fill="#FFCA3A"/><line x1="6.5" y1="4" x2="6.5" y2="1" stroke="#8B5E3C" stroke-width="1.5"/><polygon points="6.5,1 11,2.5 6.5,3.5" fill="#E8483C"/><line x1="29.5" y1="4" x2="29.5" y2="1" stroke="#8B5E3C" stroke-width="1.5"/><polygon points="29.5,1 34,2.5 29.5,3.5" fill="#8D5FD3"/><rect x="10" y="18" width="16" height="5" rx="2.5" fill="#B7D62B"/><path d="M11 12 Q18 4 25 12" stroke="#FFCA3A" stroke-width="1.2" fill="none"/></svg>
+    <h1>BrincaFiesta Admin</h1>
+    <p>Panel de administración</p>
+    <input type="email" id="loginEmail" placeholder="Correo electrónico">
+    <input type="password" id="loginPass" placeholder="Contraseña">
+    <button onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="btn-sm" onclick="document.querySelector('.sidebar').classList.toggle('show')" style="display:none;" id="menuBtn">☰</button>
+      <h2>BrincaFiesta Admin</h2>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="user-info" id="userEmail"></span>
+      <button onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <button class="active" onclick="showSection('reservations',this)">📅 Reservaciones</button>
+      <button onclick="showSection('gallery',this)">🖼️ Galería</button>
+      <button onclick="showSection('packages',this)">💰 Paquetes</button>
+    </div>
+
+    <div class="content">
+      <!-- RESERVATIONS -->
+      <div class="section active" id="sec-reservations">
+        <div class="stat-grid" id="statsGrid"></div>
+        <div class="cal-nav">
+          <button onclick="changeMonth(-1)">‹</button>
+          <h3 id="calTitle"></h3>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div style="margin-top:24px;">
+          <h3 style="margin-bottom:12px;">Todas las reservaciones</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Fecha</th><th>Hora</th><th>Nombre</th><th>Teléfono</th><th>Paquete</th><th>Personas</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody id="resTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- GALLERY -->
+      <div class="section" id="sec-gallery">
+        <h3 style="margin-bottom:16px;">Galería de fotos</h3>
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" accept="image/*" multiple onchange="handleUpload(event)">
+          <p>📸 Click para subir fotos o arrastra aquí</p>
+          <p style="font-size:.78rem;margin-top:4px;">JPG, PNG, WebP — máximo 5MB cada una</p>
+        </div>
+        <div class="gallery-grid" id="galleryGrid"></div>
+      </div>
+
+      <!-- PACKAGES -->
+      <div class="section" id="sec-packages">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3>Paquetes y precios</h3>
+          <button class="btn btn-primary" onclick="openPackageModal()">+ Nuevo paquete</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nombre</th><th>Precio</th><th>Duración</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="pkgTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PACKAGE MODAL -->
+<div class="modal-bg" id="pkgModal">
+  <div class="modal">
+    <h3 id="pkgModalTitle">Nuevo paquete</h3>
+    <input type="hidden" id="pkgEditId">
+    <label>Nombre</label>
+    <input type="text" id="pkgName" placeholder="Ej: Cumpleaños 2h">
+    <label>Precio (MXN)</label>
+    <input type="number" id="pkgPrice" placeholder="2800">
+    <label>Duración</label>
+    <input type="text" id="pkgDuration" placeholder="Ej: 2 horas">
+    <label>Tipo</label>
+    <select id="pkgType"><option value="cumple">Cumpleaños</option><option value="entrada">Entrada</option></select>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closePackageModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="savePackage()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESERVATION DETAIL MODAL -->
+<div class="modal-bg" id="resModal">
+  <div class="modal">
+    <h3>Detalle de reservación</h3>
+    <div id="resDetail"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeResModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://rgtcbnylsjkxrxjskoag.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndGNibnlsc2preHJ4anNrb2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNjkzMzksImV4cCI6MjA5OTc0NTMzOX0.VUv-mIh6nM1RyqkbGt4_9iqugPMS6GbD3arppl-Ckp4';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let viewYear, viewMonth;
+let allReservations = [];
+let allPackages = [];
+
+const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+// --- AUTH ---
+async function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  const {data,error} = await supabase.auth.signInWithPassword({email,password:pass});
+  if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
+  currentUser = data.user;
+  showDashboard();
+}
+
+async function doLogout(){
+  await supabase.auth.signOut();
+  currentUser = null;
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('loginWrap').style.display='flex';
+}
+
+function showDashboard(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('userEmail').textContent = currentUser.email;
+  const now = new Date();
+  viewYear = now.getFullYear();
+  viewMonth = now.getMonth();
+  loadAll();
+}
+
+// --- CHECK SESSION ---
+(async()=>{
+  const {data:{session}} = await supabase.auth.getSession();
+  if(session){currentUser=session.user;showDashboard();}
+})();
+
+// --- NAVIGATION ---
+function showSection(name, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(name==='reservations') loadReservations();
+  if(name==='gallery') loadGallery();
+  if(name==='packages') loadPackages();
+}
+
+// --- LOAD ALL ---
+async function loadAll(){
+  await Promise.all([loadReservations(),loadPackages()]);
+}
+
+// --- RESERVATIONS ---
+async function loadReservations(){
+  const {data} = await supabase.from('reservations').select('*').order('date',{ascending:false});
+  allReservations = data || [];
+  renderStats();
+  renderCalendar();
+  renderResTable();
+}
+
+function renderStats(){
+  const pendientes = allReservations.filter(r=>r.status==='pendiente').length;
+  const confirmadas = allReservations.filter(r=>r.status==='confirmada').length;
+  const total = allReservations.reduce((s,r)=>s+r.total,0);
+  const hoy = new Date().toISOString().slice(0,10);
+  const hoyCount = allReservations.filter(r=>r.date===hoy).length;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="num">${allReservations.length}</div><div class="label">Total reservaciones</div></div>
+    <div class="stat-card"><div class="num">${pendientes}</div><div class="label">Pendientes</div></div>
+    <div class="stat-card"><div class="num">${confirmadas}</div><div class="label">Confirmadas</div></div>
+    <div class="stat-card"><div class="num">$${total.toLocaleString('es-MX')}</div><div class="label">Ingresos totales</div></div>
+    <div class="stat-card"><div class="num">${hoyCount}</div><div class="label">Hoy</div></div>
+  `;
+}
+
+function renderCalendar(){
+  document.getElementById('calTitle').textContent = MONTHS[viewMonth]+' '+viewYear;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  ['L','M','X','J','V','S','D'].forEach(d=>{
+    const el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);
+  });
+  const first = new Date(viewYear,viewMonth,1);
+  let offset = first.getDay()-1; if(offset<0) offset=6;
+  for(let i=0;i<offset;i++){const el=document.createElement('div');el.className='cal-day';grid.appendChild(el);}
+  const days = new Date(viewYear,viewMonth+1,0).getDate();
+  const today = new Date().toISOString().slice(0,10);
+  for(let d=1;d<=days;d++){
+    const dateStr = viewYear+'-'+String(viewMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const el=document.createElement('div');el.className='cal-day';
+    if(dateStr===today) el.classList.add('today');
+    const res = allReservations.filter(r=>r.date===dateStr);
+    el.innerHTML = `<div class="day-num">${d}</div>` + res.map(r=>`<div class="event ${r.status}">${r.time} ${r.name}</div>`).join('');
+    grid.appendChild(el);
+  }
+}
+
+function changeMonth(dir){
+  viewMonth+=dir;
+  if(viewMonth>11){viewMonth=0;viewYear++;}
+  if(viewMonth<0){viewMonth=11;viewYear--;}
+  renderCalendar();
+}
+
+function renderResTable(){
+  const tbody = document.getElementById('resTable');
+  tbody.innerHTML = allReservations.map(r=>`
+    <tr>
+      <td>${r.date}</td>
+      <td>${r.time}</td>
+      <td>${r.name}</td>
+      <td>${r.phone}</td>
+      <td>${r.package_name}</td>
+      <td>${r.quantity}</td>
+      <td>$${r.total.toLocaleString('es-MX')}</td>
+      <td><span class="badge badge-${r.status}">${r.status}</span></td>
+      <td>
+        <button class="btn btn-sm btn-success" onclick="updateStatus('${r.id}','confirmada')">✓</button>
+        <button class="btn btn-sm btn-danger" onclick="updateStatus('${r.id}','cancelada')">✕</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function updateStatus(id, status){
+  await supabase.from('reservations').update({status}).eq('id',id);
+  loadReservations();
+}
+
+// --- GALLERY ---
+async function loadGallery(){
+  const {data} = await supabase.from('gallery').select('*').order('sort_order');
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = (data||[]).map(g=>`
+    <div class="gallery-item">
+      <img src="${g.url}" alt="${g.alt}">
+      <div class="overlay">
+        <button class="btn btn-sm btn-danger" onclick="deleteGallery('${g.id}','${g.url}')">Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function handleUpload(event){
+  const files = event.target.files;
+  for(const file of files){
+    const ext = file.name.split('.').pop();
+    const path = Date.now()+'.'+ext;
+    const {error} = await supabase.storage.from('gallery').upload(path,file);
+    if(error){alert('Error subiendo: '+error.message);continue;}
+    const url = SUPABASE_URL+'/storage/v1/object/public/gallery/'+path;
+    await supabase.from('gallery').insert({url,alt:file.name.replace(/\.[^.]+$/,'')});
+  }
+  loadGallery();
+  event.target.value='';
+}
+
+async function deleteGallery(id, url){
+  if(!confirm('¿Eliminar esta foto?'))return;
+  const path = url.split('/gallery/')[1];
+  await supabase.storage.from('gallery').remove([path]);
+  await supabase.from('gallery').delete().eq('id',id);
+  loadGallery();
+}
+
+// Drag & drop
+const uploadArea = document.getElementById('uploadArea');
+uploadArea.addEventListener('dragover',e=>{e.preventDefault();uploadArea.style.borderColor='#E8483C';});
+uploadArea.addEventListener('dragleave',()=>{uploadArea.style.borderColor='#e8e0d6';});
+uploadArea.addEventListener('drop',e=>{
+  e.preventDefault();uploadArea.style.borderColor='#e8e0d6';
+  const dt=e.dataTransfer;
+  const input=document.getElementById('fileInput');
+  input.files=dt.files;
+  handleUpload({target:input});
+});
+
+// --- PACKAGES ---
+async function loadPackages(){
+  const {data} = await supabase.from('packages').select('*').order('sort_order');
+  allPackages = data||[];
+  renderPkgTable();
+}
+
+function renderPkgTable(){
+  document.getElementById('pkgTable').innerHTML = allPackages.map(p=>`
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td>$${p.price.toLocaleString('es-MX')}</td>
+      <td>${p.duration}</td>
+      <td>${p.type==='cumple'?'Cumpleaños':'Entrada'}</td>
+      <td><span class="badge ${p.active?'badge-confirmada':'badge-cancelada'}">${p.active?'Activo':'Inactivo'}</span></td>
+      <td>
+        <button class="btn btn-sm btn-success" onclick="editPackage('${p.id}')">Editar</button>
+        <button class="btn btn-sm btn-danger" onclick="togglePackage('${p.id}',${!p.active})">${p.active?'Desactivar':'Activar'}</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openPackageModal(pkg){
+  document.getElementById('pkgModal').classList.add('open');
+  document.getElementById('pkgEditId').value = pkg?pkg.id:'';
+  document.getElementById('pkgModalTitle').textContent = pkg?'Editar paquete':'Nuevo paquete';
+  document.getElementById('pkgName').value = pkg?pkg.name:'';
+  document.getElementById('pkgPrice').value = pkg?pkg.price:'';
+  document.getElementById('pkgDuration').value = pkg?pkg.duration:'';
+  document.getElementById('pkgType').value = pkg?pkg.type:'entrada';
+}
+
+function closePackageModal(){document.getElementById('pkgModal').classList.remove('open');}
+
+function editPackage(id){
+  const pkg = allPackages.find(p=>p.id===id);
+  if(pkg) openPackageModal(pkg);
+}
+
+async function savePackage(){
+  const id = document.getElementById('pkgEditId').value;
+  const obj = {
+    name: document.getElementById('pkgName').value.trim(),
+    price: parseInt(document.getElementById('pkgPrice').value)||0,
+    duration: document.getElementById('pkgDuration').value.trim(),
+    type: document.getElementById('pkgType').value
+  };
+  if(!obj.name||!obj.price||!obj.duration){alert('Completa todos los campos');return;}
+  if(id){await supabase.from('packages').update(obj).eq('id',id);}
+  else{await supabase.from('packages').insert(obj);}
+  closePackageModal();
+  loadPackages();
+}
+
+async function togglePackage(id, active){
+  await supabase.from('packages').update({active}).eq('id',id);
+  loadPackages();
+}
+
+function closeResModal(){document.getElementById('resModal').classList.remove('open');}
+</script>
+</body>
+</html>
