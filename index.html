@@ -893,7 +893,9 @@
   <p class="fine">© 2026 BrincaFiesta. Precios de referencia en MXN, sujetos a confirmación.</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const _db = window.supabase.createClient('https://rgtcbnylsjkxrxjskoag.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndGNibnlsc2preHJ4anNrb2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNjkzMzksImV4cCI6MjA5OTc0NTMzOX0.VUv-mIh6nM1RyqkbGt4_9iqugPMS6GbD3arppl-Ckp4');
   // ---------- Estado global de la reserva ----------
   const state = {
     type: null,
@@ -1050,10 +1052,11 @@
   document.getElementById('fQty').addEventListener('input', updateSummary);
 
   // ---------- Confirmar ----------
-  document.getElementById('confirmBtn').addEventListener('click', ()=>{
+  document.getElementById('confirmBtn').addEventListener('click', async ()=>{
     const box = document.getElementById('confirmBox');
     const name = document.getElementById('fName').value.trim();
     const phone = document.getElementById('fPhone').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
     const qty = document.getElementById('fQty').value.trim();
     const missing = [];
     if(!state.type) missing.push('tipo de reserva');
@@ -1071,6 +1074,23 @@
     }
     const qtyNum = Math.max(1, parseInt(qty, 10));
     const total = document.getElementById('sumTotal').textContent;
+    const totalNum = parseInt(total.replace(/[^0-9]/g,'')) || 0;
+    const dateStr = state.date.getFullYear()+'-'+String(state.date.getMonth()+1).padStart(2,'0')+'-'+String(state.date.getDate()).padStart(2,'0');
+
+    try{
+      await _db.from('reservations').insert({
+        package_name: state.typeLabel,
+        date: dateStr,
+        time: state.time,
+        name: name,
+        phone: phone,
+        email: email,
+        quantity: qtyNum,
+        total: totalNum,
+        status: 'pendiente'
+      });
+    }catch(e){console.error('Error guardando reservación:',e);}
+
     const msg = 'Hola, quiero reservar en BrincaFiesta:%0A'
       + 'Tipo: ' + state.typeLabel + '%0A'
       + 'Fecha: ' + fmtDate(state.date) + '%0A'
