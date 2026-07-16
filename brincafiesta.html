@@ -369,11 +369,12 @@
   .gallery-ph.ph-9{background:var(--rosado);}
   .gallery-caption{
     position:absolute;bottom:0;left:0;right:0;
-    background:rgba(43,33,24,.5);
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
-    color:#fff;padding:32px 16px 14px;
+    padding:40px 16px 14px;
     font-size:.85rem;font-weight:700;
+    color:#fff;
+    background:linear-gradient(transparent,rgba(43,33,24,.6) 40%,rgba(43,33,24,.85));
+    mask-image:linear-gradient(transparent,black 30%);
+    -webkit-mask-image:linear-gradient(transparent,black 30%);
   }
   .gallery-caption small{display:block;font-weight:400;opacity:.8;font-size:.78rem;margin-top:2px;}
   .gallery-lightbox{
