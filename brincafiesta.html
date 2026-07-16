@@ -317,43 +317,45 @@
     max-width:1180px;margin:0 auto;
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    grid-template-rows:auto;
-    gap:18px;
+    grid-auto-rows:200px;
+    gap:14px;
   }
   .gallery-item{
-    border-radius:24px;
+    border-radius:20px;
     overflow:hidden;
     position:relative;
-    aspect-ratio:4/3;
     box-shadow:var(--shadow-soft);
     transition:transform .35s var(--bounce);
     cursor:pointer;
   }
-  .gallery-item:hover{transform:scale(1.03) rotate(-1deg);}
-  .gallery-item.tall{grid-row:span 2;aspect-ratio:auto;}
-  .gallery-item.wide{grid-column:span 2;}
+  .gallery-item:hover{transform:scale(1.02);}
+  .gallery-item.a{grid-column:span 2;grid-row:span 2;}
+  .gallery-item.b{grid-row:span 2;}
+  .gallery-item.c{grid-column:span 2;}
   .gallery-item img{width:100%;height:100%;object-fit:cover;}
-  .gallery-placeholder{
+  .gallery-ph{
     width:100%;height:100%;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:8px;font-family:Arial,sans-serif;font-weight:600;font-size:.95rem;
-    color:#fff;text-align:center;padding:16px;
+    gap:6px;font-weight:700;font-size:.9rem;
+    color:#fff;text-align:center;padding:20px;
   }
-  .gallery-placeholder .gp-emoji{font-size:2.4rem;}
-  .gallery-placeholder.gp-1{background:var(--rosado);}
-  .gallery-placeholder.gp-2{background:var(--azul-celeste);}
-  .gallery-placeholder.gp-3{background:var(--amarillo);color:var(--tinta);}
-  .gallery-placeholder.gp-4{background:var(--violeta);}
-  .gallery-placeholder.gp-5{background:var(--verde-limon);color:var(--tinta);}
-  .gallery-placeholder.gp-6{background:var(--rojo);}
-  .gallery-placeholder.gp-7{background:var(--marron);}
-  .gallery-placeholder.gp-8{background:var(--azul-celeste);}
+  .gallery-ph .ph-icon{font-size:2.2rem;}
+  .gallery-ph.ph-1{background:var(--rosado);}
+  .gallery-ph.ph-2{background:var(--azul-celeste);}
+  .gallery-ph.ph-3{background:var(--violeta);}
+  .gallery-ph.ph-4{background:var(--amarillo);color:var(--tinta);}
+  .gallery-ph.ph-5{background:var(--verde-limon);color:var(--tinta);}
+  .gallery-ph.ph-6{background:var(--rojo);}
+  .gallery-ph.ph-7{background:var(--marron);}
+  .gallery-ph.ph-8{background:var(--azul-celeste);}
+  .gallery-ph.ph-9{background:var(--rosado);}
   .gallery-caption{
     position:absolute;bottom:0;left:0;right:0;
-    background:linear-gradient(transparent,rgba(43,33,24,.75));
-    color:#fff;padding:28px 16px 14px;
+    background:linear-gradient(transparent,rgba(43,33,24,.8));
+    color:#fff;padding:32px 16px 14px;
     font-size:.85rem;font-weight:700;
   }
+  .gallery-caption small{display:block;font-weight:400;opacity:.8;font-size:.78rem;margin-top:2px;}
   .gallery-lightbox{
     display:none;position:fixed;inset:0;z-index:100;
     background:rgba(43,33,24,.92);
@@ -411,13 +413,15 @@
   .ta-6{background:var(--amarillo);color:var(--tinta);}
 
   @media (max-width:900px){
-    .gallery-grid{grid-template-columns:repeat(2,1fr);}
-    .gallery-item.tall{grid-row:span 1;aspect-ratio:4/3;}
+    .gallery-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px;}
+    .gallery-item.a{grid-column:span 2;grid-row:span 1;}
+    .gallery-item.b{grid-row:span 1;}
+    .gallery-item.c{grid-column:span 2;}
     .testi-grid{grid-template-columns:1fr 1fr;}
   }
   @media (max-width:520px){
-    .gallery-grid{grid-template-columns:1fr;}
-    .gallery-item.wide{grid-column:span 1;}
+    .gallery-grid{grid-template-columns:1fr 1fr;grid-auto-rows:160px;}
+    .gallery-item.a,.gallery-item.c{grid-column:span 2;}
     .testi-grid{grid-template-columns:1fr;}
   }
 
@@ -562,66 +566,46 @@
 
 <section id="galeria">
   <div class="section-head">
-    <p class="eyebrow">Nuestro espacio</p>
-    <h2>Así se vive BrincaFiesta</h2>
-    <p>Infraestructura segura, inflables gigantes y fiestas que nadie olvida. Comparte imágenes reales de lo que ofrecemos.</p>
+    <p class="eyebrow">Galeria de fiestas</p>
+    <h2>Cumpleanos que se vivieron</h2>
+    <p>Imagenes de las fiestas que hemos organizado. Cada cumpleano es una aventura diferente.</p>
   </div>
   <div class="gallery-grid">
-    <div class="gallery-item wide" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-1">
-        <span class="gp-emoji">🏰</span>
-        Inflable gigante principal
-      </div>
-      <div class="gallery-caption">Nuestro castillo inflable estrella — ¡mide 8 metros!</div>
+    <div class="gallery-item a" onclick="openLightbox(this)">
+      <div class="gallery-ph ph-1"><span class="ph-icon">🎂</span>Cumpleanos de Sofia</div>
+      <div class="gallery-caption">Fiesta tematica de Princesas<small>25 ninos — Paquete Fiesta Salto Real</small></div>
     </div>
-    <div class="gallery-item tall" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-2">
-        <span class="gp-emoji">🎈</span>
-        Zona de cumpleaños
-      </div>
-      <div class="gallery-caption">Salón temático decorado para tu fiesta</div>
+    <div class="gallery-item b" onclick="openLightbox(this)">
+      <div class="gallery-ph ph-2"><span class="ph-icon">🎈</span>Decoracion tematica</div>
+      <div class="gallery-caption">Salon decorado a medida<small>Temas personalizados</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-3">
-        <span class="gp-emoji">🎂</span>
-        Mesa de dulces
-      </div>
-      <div class="gallery-caption">Mesa de dulces incluida en el paquete</div>
+      <div class="gallery-ph ph-3"><span class="ph-icon">🤸</span>Zona de saltos</div>
+      <div class="gallery-caption">Inflables gigantes<small>Seguros y super coloridos</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-4">
-        <span class="gp-emoji">🎉</span>
-        Fiesta temática
-      </div>
-      <div class="gallery-caption">Decoraciones personalizadas por tema</div>
+      <div class="gallery-ph ph-4"><span class="ph-icon">🧁</span>Mesa de dulces</div>
+      <div class="gallery-caption">Dulces y pastel incluidos<small>Cumpleanos de Valentina</small></div>
+    </div>
+    <div class="gallery-item c" onclick="openLightbox(this)">
+      <div class="gallery-ph ph-5"><span class="ph-icon">🎉</span>Cumpleanos de Mateo</div>
+      <div class="gallery-caption">Fiesta tematica Superheroes<small>30 ninos — Fiesta Salto Real</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-5">
-        <span class="gp-emoji">🤸</span>
-        Zona de saltos
-      </div>
-      <div class="gallery-caption">Área amplia para que los niños salten sin límites</div>
-    </div>
-    <div class="gallery-item wide" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-6">
-        <span class="gp-emoji">🎊</span>
-        Cumpleaños celebrados
-      </div>
-      <div class="gallery-caption">Más de 8,000 fiestas realizadas con éxito</div>
+      <div class="gallery-ph ph-6"><span class="ph-icon">🎊</span>Pinata sorpresa</div>
+      <div class="gallery-caption">El momento favorito de todos<small>Pinatas personalizadas</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-7">
-        <span class="gp-emoji">🧁</span>
-        Snack bar
-      </div>
-      <div class="gallery-caption">Opciones de comida y bebida para todos</div>
+      <div class="gallery-ph ph-7"><span class="ph-icon">📸</span>Fotografo incluido</div>
+      <div class="gallery-caption">Recuerdos inolvidables<small>30 min de sesion fotografica</small></div>
     </div>
-    <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-placeholder gp-8">
-        <span class="gp-emoji">🎪</span>
-        Sala de juegos
-      </div>
-      <div class="gallery-caption">Juegos adicionales para toda la familia</div>
+    <div class="gallery-item a" onclick="openLightbox(this)">
+      <div class="gallery-ph ph-8"><span class="ph-icon">🎪</span>Cumpleanos de Valentina</div>
+      <div class="gallery-caption">Fiesta tematica Unicorno<small>20 ninos — Fiesta Rebote</small></div>
+    </div>
+    <div class="gallery-item b" onclick="openLightbox(this)">
+      <div class="gallery-ph ph-9"><span class="ph-icon">🎤</span>Animacion en vivo</div>
+      <div class="gallery-caption">Anfitrion profesional<small>Juegos, bailes y diversion</small></div>
     </div>
   </div>
 </section>
@@ -963,7 +947,7 @@
   function openLightbox(el){
     const lb = document.getElementById('lightbox');
     const content = document.getElementById('lbContent');
-    const clone = el.querySelector('.gallery-placeholder').cloneNode(true);
+    const clone = el.querySelector('.gallery-ph').cloneNode(true);
     clone.style.width = '70vw';
     clone.style.maxWidth = '700px';
     clone.style.height = '50vh';
