@@ -342,7 +342,7 @@ function renderCalendar(){
     const el=document.createElement('div');el.className='cal-day';
     if(dateStr===today) el.classList.add('today');
     const res = allReservations.filter(r=>r.date===dateStr);
-    el.innerHTML = `<div class="day-num">${d}</div>` + res.map(r=>`<div class="event ${r.status}">${r.time} ${r.name}</div>`).join('');
+    el.innerHTML = `<div class="day-num">${d}</div>` + res.map(r=>`<div class="event ${r.status}" onclick="showResDetail('${r.id}')" style="cursor:pointer">${r.time} ${r.name}</div>`).join('');
     grid.appendChild(el);
   }
 }
@@ -485,6 +485,30 @@ async function savePackage(){
 async function togglePackage(id, active){
   await db.from('packages').update({active}).eq('id',id);
   loadPackages();
+}
+
+function showResDetail(id){
+  const r = allReservations.find(x=>x.id===id);
+  if(!r) return;
+  document.getElementById('resDetail').innerHTML = `
+    <div style="display:grid;gap:12px;margin-top:8px;">
+      <div><strong>Nombre:</strong> ${r.name}</div>
+      <div><strong>Teléfono:</strong> ${r.phone}</div>
+      ${r.email?'<div><strong>Email:</strong> '+r.email+'</div>':''}
+      <div><strong>Paquete:</strong> ${r.package_name}</div>
+      <div><strong>Fecha:</strong> ${r.date}</div>
+      <div><strong>Hora:</strong> ${r.time}</div>
+      <div><strong>Personas:</strong> ${r.quantity}</div>
+      <div><strong>Total:</strong> $${r.total.toLocaleString('es-MX')}</div>
+      <div><strong>Estado:</strong> <span class="badge badge-${r.status}">${r.status}</span></div>
+      <div><strong>Creada:</strong> ${new Date(r.created_at).toLocaleString('es-MX')}</div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn btn-success" onclick="updateStatus('${r.id}','confirmada');closeResModal();">Confirmar</button>
+        <button class="btn btn-danger" onclick="updateStatus('${r.id}','cancelada');closeResModal();">Cancelar</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('resModal').classList.add('open');
 }
 
 function closeResModal(){document.getElementById('resModal').classList.remove('open');}
