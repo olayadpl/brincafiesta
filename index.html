@@ -715,32 +715,36 @@
   </div>
   <div class="gallery-grid">
     <div class="gallery-item a" onclick="openLightbox(this)">
-      <div class="gallery-ph ph-1"><span class="ph-icon">🎂</span>Cumpleanos de Sofia</div>
-      <div class="gallery-caption">Fiesta tematica de Princesas<small>25 ninos — Paquete Fiesta Salto Real</small></div>
+      <img src="img/gallery-1.jpg" alt="Ninos saltando en inflable">
+      <div class="gallery-caption">Ninos disfrutando en el inflable<small>Diversión garantizada</small></div>
     </div>
     <div class="gallery-item b" onclick="openLightbox(this)">
-      <div class="gallery-ph ph-2"><span class="ph-icon">🎈</span>Decoracion tematica</div>
-      <div class="gallery-caption">Salon decorado a medida<small>Temas personalizados</small></div>
+      <img src="img/gallery-2.jpg" alt="Inflable en parque">
+      <div class="gallery-caption">Inflable en el parque<small>Instalaciones al aire libre</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-ph ph-3"><span class="ph-icon">🤸</span>Zona de saltos</div>
-      <div class="gallery-caption">Inflables gigantes<small>Seguros y super coloridos</small></div>
+      <img src="img/gallery-3.jpg" alt="Nina en castillo inflable">
+      <div class="gallery-caption">Cumpleaños temático<small>Castillo de princesas</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-ph ph-4"><span class="ph-icon">🧁</span>Mesa de dulces</div>
-      <div class="gallery-caption">Dulces y pastel incluidos<small>Cumpleanos de Valentina</small></div>
+      <img src="img/gallery-4.jpg" alt="Ninos jugando en fiesta">
+      <div class="gallery-caption">Juegos en la fiesta<small>Diversión para todas las edades</small></div>
     </div>
     <div class="gallery-item c" onclick="openLightbox(this)">
-      <div class="gallery-ph ph-5"><span class="ph-icon">🎉</span>Cumpleanos de Mateo</div>
-      <div class="gallery-caption">Fiesta tematica Superheroes<small>30 ninos — Fiesta Salto Real</small></div>
+      <img src="img/gallery-5.jpg" alt="Nino en castillo inflable">
+      <div class="gallery-caption">Ninos saltando en el inflable<small>Momentos de pura alegría</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-ph ph-6"><span class="ph-icon">🎊</span>Pinata sorpresa</div>
-      <div class="gallery-caption">El momento favorito de todos<small>Pinatas personalizadas</small></div>
+      <img src="img/gallery-6.jpg" alt="Saltos en inflable">
+      <div class="gallery-caption">Saltos y risas<small>Diversión sin límites</small></div>
     </div>
     <div class="gallery-item" onclick="openLightbox(this)">
-      <div class="gallery-ph ph-7"><span class="ph-icon">📸</span>Fotografo incluido</div>
-      <div class="gallery-caption">Recuerdos inolvidables<small>30 min de sesion fotografica</small></div>
+      <img src="img/gallery-7.jpg" alt="Fiesta de cumpleaños">
+      <div class="gallery-caption">Fiesta de cumpleaños<small>Celebraciones inolvidables</small></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(this)">
+      <img src="img/gallery-8.jpg" alt="Decoración de fiesta">
+      <div class="gallery-caption">Decoración temática<small>Personalización completa</small></div>
     </div>
   </div>
 </section>
@@ -840,7 +844,7 @@
       <p class="field-label">4. Tus datos</p>
       <div class="form-row">
         <input type="text" id="fName" placeholder="Nombre de quien reserva">
-        <input type="number" id="fQty" placeholder="N.º de niños / personas" min="1" value="1">
+        <input type="number" id="fQty" placeholder="N.º de niños / personas" min="1">
       </div>
       <div class="form-row">
         <input type="tel" id="fPhone" placeholder="WhatsApp">
@@ -1082,12 +1086,13 @@
   function openLightbox(el){
     const lb = document.getElementById('lightbox');
     const content = document.getElementById('lbContent');
-    const clone = el.querySelector('.gallery-ph').cloneNode(true);
-    clone.style.width = '70vw';
-    clone.style.maxWidth = '700px';
-    clone.style.height = '50vh';
+    const img = el.querySelector('img');
+    if(!img) return;
+    const clone = img.cloneNode(true);
+    clone.style.maxWidth = '90vw';
+    clone.style.maxHeight = '85vh';
     clone.style.borderRadius = '20px';
-    clone.style.fontSize = '1.3rem';
+    clone.style.objectFit = 'contain';
     content.innerHTML = '';
     content.appendChild(clone);
     lb.classList.add('open');
