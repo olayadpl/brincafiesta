@@ -1052,22 +1052,30 @@
   // ---------- Confirmar ----------
   document.getElementById('confirmBtn').addEventListener('click', ()=>{
     const box = document.getElementById('confirmBox');
-    if(!state.type || !state.date || !state.time){
+    const name = document.getElementById('fName').value.trim();
+    const phone = document.getElementById('fPhone').value.trim();
+    const qty = document.getElementById('fQty').value.trim();
+    const missing = [];
+    if(!state.type) missing.push('tipo de reserva');
+    if(!state.date) missing.push('día');
+    if(!state.time) missing.push('hora');
+    if(!name) missing.push('nombre');
+    if(!phone) missing.push('WhatsApp');
+    if(!qty) missing.push('n.º de personas');
+    if(missing.length){
       box.style.background = 'var(--rojo)';
       box.style.color = '#fff';
       box.style.display = 'block';
-      box.textContent = 'Falta elegir tipo de reserva, día u hora antes de confirmar.';
+      box.textContent = 'Falta completar: ' + missing.join(', ') + '.';
       return;
     }
-    const name = document.getElementById('fName').value.trim() || 'Sin nombre';
-    const phone = document.getElementById('fPhone').value.trim();
-    const qty = Math.max(1, parseInt(document.getElementById('fQty').value || '1', 10));
+    const qtyNum = Math.max(1, parseInt(qty, 10));
     const total = document.getElementById('sumTotal').textContent;
     const msg = 'Hola, quiero reservar en BrincaFiesta:%0A'
       + 'Tipo: ' + state.typeLabel + '%0A'
       + 'Fecha: ' + fmtDate(state.date) + '%0A'
       + 'Hora: ' + state.time + '%0A'
-      + 'Personas: ' + qty + '%0A'
+      + 'Personas: ' + qtyNum + '%0A'
       + 'Total estimado: ' + total + '%0A'
       + 'Nombre: ' + name;
     window.open('https://wa.me/5359673871?text=' + msg, '_blank');
