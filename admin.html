@@ -231,7 +231,8 @@
 <script>
 const SUPABASE_URL = 'https://rgtcbnylsjkxrxjskoag.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndGNibnlsc2preHJ4anNrb2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNjkzMzksImV4cCI6MjA5OTc0NTMzOX0.VUv-mIh6nM1RyqkbGt4_9iqugPMS6GbD3arppl-Ckp4';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = client;
 
 let currentUser = null;
 let viewYear, viewMonth;
@@ -246,10 +247,15 @@ async function doLogin(){
   const pass = document.getElementById('loginPass').value;
   const errEl = document.getElementById('loginError');
   errEl.style.display = 'none';
-  const {data,error} = await supabase.auth.signInWithPassword({email,password:pass});
-  if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
-  currentUser = data.user;
-  showDashboard();
+  if(!email||!pass){errEl.textContent='Completa todos los campos';errEl.style.display='block';return;}
+  try{
+    const {data,error} = await supabase.auth.signInWithPassword({email,password:pass});
+    if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
+    currentUser = data.user;
+    showDashboard();
+  }catch(e){
+    errEl.textContent='Error de conexión: '+e.message;errEl.style.display='block';
+  }
 }
 
 async function doLogout(){
